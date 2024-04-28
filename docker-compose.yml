@@ -10,7 +10,7 @@ services:
       - "3000:3000"
     networks:
       - ps
-      -
+
   backend:
     image: prod-service:local
     container_name: backend
