@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  backend:
+    image: prod-service:local
+    container_name: backend
+    build:
+      context: ../Backend
+      dockerfile: Dockerfile
+    ports:
+      - '8000:8000'
+    environment:
+      - PORT=8000
+      - NODE_ENV=production
+    volumes:
+      - ./src:/usr/src/app/src
+    depends_on:
+      - mysql
+    networks:
+      - ps
+
+  mysql:
+    image: mysql
+    container_name: docker-mysql
+    ports:
+      - '3307:3307'
+    environment:
+      - MYSQL_HOST=127.0.0.1
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=users_db
+      - MYSQL_USER=testUser
+      - MYSQL_PASSWORD=testUser123
+      - MYSQL_TCP_PORT=3307
+    volumes:
+      - mysql-data:/var/lib/mysql
+    #      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - ps
+    restart: always
+    command: --default-authentication-plugin=caching_sha2_password
+
+networks:
+  ps:
+
+volumes:
+  mysql-data:
